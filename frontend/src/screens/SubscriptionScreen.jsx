@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchSubscriptionTiers, createSubscription, fetchMySubscription } from '../redux/actions/subscriptionActions';
+import PayPalButton from '../components/PayPalButton';
 import '../styles/Subscription.css';
 
 function SubscriptionScreen() {
@@ -12,6 +13,7 @@ function SubscriptionScreen() {
   const mySubscription = useSelector((state) => state.subscriptions.mySubscription);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTier, setSelectedTier] = useState(null);
+  const [paypalError, setPaypalError] = useState('');
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -30,23 +32,17 @@ function SubscriptionScreen() {
 
   const handleSubscribe = async (tier) => {
     setSelectedTier(tier.id);
-    
-    try {
-      alert(`Redirecting to PayPal for ${tier.name} subscription ($${tier.price}/month)`);
-      
-      await dispatch(createSubscription({
-        tier_id: tier.id,
-        paypal_subscription_id: 'MOCK_PAYPAL_ID_' + tier.id,
-      }));
-      
-      await dispatch(fetchMySubscription());
-      alert(`Successfully upgraded to ${tier.name} plan!`);
-      // Stay on subscription page to show update, don't navigate away
-    } catch (error) {
-      alert('Subscription failed. Please try again.');
-    } finally {
-      setSelectedTier(null);
-    }
+    setPaypalError('');
+  };
+
+  const handlePayPalSuccess = async (subscription) => {
+    await dispatch(fetchMySubscription());
+    alert(`Successfully upgraded to ${subscription.tier_name} plan!`);
+    setSelectedTier(null);
+  };
+
+  const handlePayPalError = (error) => {
+    setPaypalError(error);
   };
 
   const handleRevert = async () => {
@@ -71,6 +67,15 @@ function SubscriptionScreen() {
   };
 
   if (isLoading) return <div className="loading">Loading subscription tiers...</div>;
+
+  if (!tiers || tiers.length === 0) {
+    return (
+      <div className="subscription-container">
+        <h1>Choose Your Plan</h1>
+        <p className="error-message">No subscription plans available at the moment. Please try again later.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="subscription-container">
@@ -114,18 +119,32 @@ function SubscriptionScreen() {
                 {selectedTier === tier.id ? 'Processing...' : 'Revert to Basic'}
               </button>
             ) : (
-              <button
-                onClick={() => handleSubscribe(tier)}
-                disabled={selectedTier === tier.id}
-                className="btn-subscribe"
-              >
-                {selectedTier === tier.id ? 'Processing...' : 'Upgrade'}
-              </button>
+              <>
+                {selectedTier === tier.id ? (
+                  <div className="paypal-button-container">
+                    {paypalError && <p className="error-message">{paypalError}</p>}
+                    <PayPalButton 
+                      tier={tier}
+                      onSuccess={handlePayPalSuccess}
+                      onError={handlePayPalError}
+                    />
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => handleSubscribe(tier)}
+                    disabled={selectedTier !== null}
+                    className="btn-subscribe"
+                  >
+                    Upgrade
+                  </button>
+                )}
+              </>
             )}
           </div>
         );
         })}
       </div>
+      {paypalError && <div className="error-banner">{paypalError}</div>}
     </div>
   );
 }

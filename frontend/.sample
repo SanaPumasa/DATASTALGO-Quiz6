@@ -1,0 +1,6 @@
+# Frontend Environment Variables Example
+# Copy this file to .env and fill in with actual values
+
+# PayPal Sandbox Client ID
+# Get this from your PayPal Developer Dashboard: https://developer.paypal.com/dashboard
+REACT_APP_PAYPAL_CLIENT_ID=your_sandbox_client_id_here

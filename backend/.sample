@@ -1,0 +1,12 @@
+# Backend Environment Variables Example
+# Copy this file to .env and fill in with actual values
+
+# Gemini API Key for AI Chatbot
+# Get your API key from: https://aistudio.google.com/app/apikey
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# PayPal Sandbox Credentials
+# Create a sandbox account at: https://developer.paypal.com/dashboard
+PAYPAL_CLIENT_ID=your_sandbox_client_id_here
+PAYPAL_CLIENT_SECRET=your_sandbox_client_secret_here
+PAYPAL_MODE=sandbox

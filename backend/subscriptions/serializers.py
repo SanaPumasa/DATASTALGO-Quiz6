@@ -4,7 +4,7 @@ from subscriptions.models import SubscriptionTier, UserSubscription
 class SubscriptionTierSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubscriptionTier
-        fields = ('id', 'name', 'price', 'max_usage')
+        fields = ('id', 'name', 'price', 'max_usage', 'paypal_plan_id')
 
 class UserSubscriptionSerializer(serializers.ModelSerializer):
     tier_name = serializers.CharField(source='tier.name', read_only=True)

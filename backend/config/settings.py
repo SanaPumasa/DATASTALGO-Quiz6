@@ -32,6 +32,11 @@ ALLOWED_HOSTS = []
 import os
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
+# PayPal Configuration
+PAYPAL_CLIENT_ID = os.getenv('PAYPAL_CLIENT_ID')
+PAYPAL_CLIENT_SECRET = os.getenv('PAYPAL_CLIENT_SECRET')
+PAYPAL_MODE = os.getenv('PAYPAL_MODE', 'sandbox')
+
 
 # Application definition
 

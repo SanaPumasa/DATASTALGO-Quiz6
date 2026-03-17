@@ -66,7 +66,6 @@ function SignUp() {
     } catch (err) {
       const errorData = err.response?.data;
       let errorMessage = 'Registration failed. Please try again.';
-      
       if (errorData?.non_field_errors) {
         errorMessage = Array.isArray(errorData.non_field_errors) 
           ? errorData.non_field_errors[0] 
@@ -74,7 +73,6 @@ function SignUp() {
       } else if (errorData?.detail) {
         errorMessage = errorData.detail;
       } else if (typeof errorData === 'object') {
-        // Handle field-specific errors - show field name with error
         const fieldName = Object.keys(errorData)[0];
         const fieldError = errorData[fieldName];
         const errorValue = Array.isArray(fieldError) ? fieldError[0] : fieldError;

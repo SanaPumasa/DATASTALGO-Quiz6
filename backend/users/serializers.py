@@ -24,7 +24,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         }
 
     def validate(self, data):
-        # Only validate password match if confirm_password is provided
         if 'confirm_password' in data:
             if data['password'] != data['confirm_password']:
                 raise serializers.ValidationError("Passwords do not match.")
@@ -43,8 +42,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             gender=validated_data.get('gender', ''),
             role='user'
         )
-        
-        # Automatically create a basic subscription for new users
         try:
             basic_tier = SubscriptionTier.objects.get(name='Basic')
             UserSubscription.objects.create(

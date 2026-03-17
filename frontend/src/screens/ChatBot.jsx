@@ -28,7 +28,6 @@ function ChatBot() {
   }, [dispatch]);
 
   useEffect(() => {
-    // Auto-scroll to bottom whenever messages change
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
     }
@@ -76,8 +75,6 @@ function ChatBot() {
         ...prev,
         { id: Date.now() + 1, text: response.response, sender: 'bot' },
       ]);
-      
-      // Update subscription with new usage_left
       if (response.usage_left !== undefined) {
         dispatch({
           type: types.SUBSCRIPTIONS_FETCH_MY,

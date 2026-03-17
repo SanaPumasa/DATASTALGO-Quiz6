@@ -1,0 +1,103 @@
+# Django / Python
+*.py[cod]
+*$py.class
+__pycache__/
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.backup
+
+# Database
+db.sqlite3
+*.db
+*.sqlite
+*.sqlite3
+
+# Media files
+media/
+uploads/
+
+# Logs
+*.log
+logs/
+debug.log
+
+# Django
+*.pid
+local_settings.py
+/staticfiles/
+/static/
+
+# Testing
+.coverage
+.coverage.*
+.pytest_cache/
+htmlcov/
+.tox/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Windows
+*.lnk
+desktop.ini
+
+# Misc
+*.bak
+.cache/
+__pycache__
+.env.swp
+*.tmp

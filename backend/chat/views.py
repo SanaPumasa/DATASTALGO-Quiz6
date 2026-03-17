@@ -12,7 +12,6 @@ class AIChatbotView(APIView):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Configure Gemini API
         try:
             genai.configure(api_key=settings.GEMINI_API_KEY)
             self.model = genai.GenerativeModel('gemini-2.5-flash')
@@ -21,7 +20,6 @@ class AIChatbotView(APIView):
             self.error_msg = f"Gemini API not configured: {str(e)}"
 
     def post(self, request):
-        # Check if Gemini API is properly configured
         if not self.model:
             return Response(
                 {"detail": "AI service is not available. Please set GEMINI_API_KEY environment variable."},
@@ -76,17 +74,12 @@ class AIChatbotView(APIView):
         }, status=status.HTTP_200_OK)
 
     def generate_response(self, message):
-        # Create a natural, conversational prompt for auto repair services
         system_prompt = """You are a friendly auto repair assistant. Help customers with car questions in a natural, conversational way.
 
 You can talk about engine repair, transmission repair, brakes, diagnostics, and general car maintenance. When someone asks about services, mention them naturally without listing or special formatting. Keep your responses short, friendly, and natural - like talking to a real person. Don't use asterisks, brackets, or bullet points. Just have a normal conversation.
 
 If they want to book or learn more about specific services, encourage them to explore the platform."""
-        
-        # Combine system prompt with user message
         full_prompt = f"{system_prompt}\n\nCustomer: {message}\n\nAssistant:"
-        
-        # Get response from Gemini API
         response = self.model.generate_content(full_prompt)
         return response.text
 

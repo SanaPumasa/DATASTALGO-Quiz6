@@ -16,7 +16,6 @@ api.interceptors.request.use((config) => {
     console.log('No token in localStorage for request:', config.url);
   }
   
-  // Only set JSON content-type if data is not FormData
   if (config.data && !(config.data instanceof FormData)) {
     config.headers['Content-Type'] = 'application/json';
   }

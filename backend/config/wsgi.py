@@ -9,8 +9,6 @@ https://docs.djangoproject.com/en/6.0/howto/deployment/wsgi/
 
 import os
 from pathlib import Path
-
-# Load environment variables from .env file
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent

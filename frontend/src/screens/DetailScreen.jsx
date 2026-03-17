@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import api from '../config/api';
+import { getImageUrl } from '../utils/imageUtils';
 import '../styles/Detail.css';
 
 function DetailScreen() {
@@ -24,21 +25,17 @@ function DetailScreen() {
       }
     };
 
+    fetchService();
+  }, [id]);
+
+  const handleAvailService = () => {
     if (!isAuthenticated) {
+      alert('Please sign in to book this service');
       navigate('/signin');
       return;
     }
-
-    fetchService();
-  }, [id, isAuthenticated, navigate]);
-
-  const handleAvailService = () => {
     navigate('/subscription');
   };
-
-  if (!isAuthenticated) {
-    return null;
-  }
 
   if (isLoading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
@@ -49,7 +46,7 @@ function DetailScreen() {
       <button onClick={() => navigate(-1)} className="back-btn">← Back</button>
       <div className="detail-content">
         {service.sample_image && (
-          <img src={service.sample_image} alt={service.service_name} className="detail-image" />
+          <img src={getImageUrl(service.sample_image)} alt={service.service_name} className="detail-image" />
         )}
         <div className="detail-info">
           <h1>{service.service_name}</h1>

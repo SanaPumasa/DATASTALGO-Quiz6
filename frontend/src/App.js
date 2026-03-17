@@ -14,6 +14,8 @@ import SubscriptionList from './screens/SubscriptionList';
 import UserScreen from './screens/UserScreen';
 import ChatBot from './screens/ChatBot';
 import Navigation from './components/Navigation';
+import SimpleHeader from './components/SimpleHeader';
+import Footer from './components/Footer';
 
 function ProtectedRoute({ children, isAuthenticated }) {
   return isAuthenticated ? children : <Navigate to="/signin" replace />;
@@ -24,26 +26,12 @@ function App() {
 
   return (
     <Router>
-      {isAuthenticated && <Navigation />}
+      {isAuthenticated ? <Navigation /> : <SimpleHeader />}
       <Routes>
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <HomeScreen />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/service/:id"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <DetailScreen />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="/service/:id" element={<DetailScreen />} />
         <Route
           path="/apply-seller"
           element={
@@ -101,6 +89,7 @@ function App() {
           }
         />
       </Routes>
+      <Footer />
     </Router>
   );
 }

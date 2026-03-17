@@ -61,8 +61,7 @@ function SignUp() {
     }
 
     try {
-      const { confirm_password, ...data } = formData;
-      await dispatch(registerUser(data));
+      await dispatch(registerUser(formData));
       navigate('/signin');
     } catch (err) {
       const errorData = err.response?.data;
@@ -75,11 +74,14 @@ function SignUp() {
       } else if (errorData?.detail) {
         errorMessage = errorData.detail;
       } else if (typeof errorData === 'object') {
-        // Handle field-specific errors
-        const firstError = Object.values(errorData)[0];
-        errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
+        // Handle field-specific errors - show field name with error
+        const fieldName = Object.keys(errorData)[0];
+        const fieldError = errorData[fieldName];
+        const errorValue = Array.isArray(fieldError) ? fieldError[0] : fieldError;
+        errorMessage = `${fieldName}: ${errorValue}`;
       }
       
+      console.error('Registration error:', err.response?.data);
       setError(errorMessage);
     } finally {
       setIsLoading(false);

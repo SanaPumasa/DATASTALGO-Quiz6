@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { sendChatMessage } from '../redux/actions/adminActions';
 import { fetchMySubscription } from '../redux/actions/subscriptionActions';
+import * as types from '../redux/constants';
 import '../styles/ChatBot.css';
 
 function ChatBot() {
@@ -20,14 +21,17 @@ function ChatBot() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
-  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
   useEffect(() => {
     dispatch(fetchMySubscription()).finally(() => setIsLoading(false));
   }, [dispatch]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Auto-scroll to bottom whenever messages change
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, [messages]);
 
   if (!isAuthenticated) {
@@ -49,6 +53,15 @@ function ChatBot() {
       return;
     }
 
+    if (subscription?.usage_left <= 0) {
+      setMessages([
+        ...messages,
+        { id: Date.now(), text: 'Your message limit has been reached. Please upgrade your subscription to continue.', sender: 'bot' },
+      ]);
+      navigate('/subscription');
+      return;
+    }
+
     const userMessage = input.trim();
     setInput('');
     setMessages([
@@ -63,6 +76,17 @@ function ChatBot() {
         ...prev,
         { id: Date.now() + 1, text: response.response, sender: 'bot' },
       ]);
+      
+      // Update subscription with new usage_left
+      if (response.usage_left !== undefined) {
+        dispatch({
+          type: types.SUBSCRIPTIONS_FETCH_MY,
+          payload: {
+            ...subscription,
+            usage_left: response.usage_left
+          }
+        });
+      }
     } catch (error) {
       setMessages((prev) => [
         ...prev,
@@ -83,10 +107,13 @@ function ChatBot() {
     <div className="chatbot-container">
       <div className="chatbot-header">
         <h1>Auto Repair Chatbot</h1>
-        {subscription?.is_active && (
+        {subscription?.is_active ? (
           <div className="usage-info">
-            Usage Left: {subscription.usage_left}/{subscription.tier_name || 'Unknown'} tier
+            <p><strong>Plan:</strong> {subscription.tier_name || 'Unknown'}</p>
+            <p><strong>Usage Left:</strong> {subscription.usage_left} messages</p>
           </div>
+        ) : (
+          <div className="usage-info">No active subscription</div>
         )}
       </div>
 
@@ -97,15 +124,21 @@ function ChatBot() {
             Subscribe Now
           </button>
         </div>
+      ) : subscription?.usage_left <= 0 ? (
+        <div className="subscription-prompt">
+          <p>Your message limit has been reached for this month.</p>
+          <button onClick={() => navigate('/subscription')} className="btn-subscribe">
+            Upgrade Your Plan
+          </button>
+        </div>
       ) : (
         <>
-          <div className="messages-container">
+          <div className="messages-container" ref={messagesContainerRef}>
             {messages.map((msg) => (
               <div key={msg.id} className={`message ${msg.sender}`}>
                 <div className="message-content">{msg.text}</div>
               </div>
             ))}
-            <div ref={messagesEndRef} />
           </div>
 
           <form onSubmit={handleSendMessage} className="chat-input-form">
@@ -115,9 +148,15 @@ function ChatBot() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask me anything about our services..."
               disabled={isSending}
+              className="chat-input"
             />
-            <button type="submit" disabled={isSending || !input.trim()}>
-              {isSending ? 'Sending...' : 'Send'}
+            <button 
+              type="submit" 
+              disabled={isSending || !input.trim() || subscription?.usage_left <= 0}
+              className="btn-send"
+              title={subscription?.usage_left <= 0 ? "No messages left in your plan" : ""}
+            >
+              {isSending ? '⏳' : '📤'}
             </button>
           </form>
         </>

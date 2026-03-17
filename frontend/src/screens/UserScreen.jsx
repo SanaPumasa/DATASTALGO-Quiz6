@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { fetchAdminUsers, deleteAdminUser } from '../redux/actions/adminActions';
+import { fetchAdminUsers, fetchAdminSellers, deleteAdminUser } from '../redux/actions/adminActions';
 import { fetchSellerApplications, approveApplication, declineApplication } from '../redux/actions/sellerActions';
 import '../styles/UserScreen.css';
 
@@ -10,6 +10,7 @@ function UserScreen() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const users = useSelector((state) => state.admin.users);
+  const sellers = useSelector((state) => state.admin.sellers);
   const applications = useSelector((state) => state.seller.applications);
   const [activeTab, setActiveTab] = useState('users');
   const [isLoading, setIsLoading] = useState(true);
@@ -23,6 +24,7 @@ function UserScreen() {
       setIsLoading(true);
       Promise.all([
         dispatch(fetchAdminUsers()),
+        dispatch(fetchAdminSellers()),
         dispatch(fetchSellerApplications()),
       ]).finally(() => setIsLoading(false));
     }
@@ -88,6 +90,12 @@ function UserScreen() {
           Users
         </button>
         <button
+          className={`tab-btn ${activeTab === 'sellers' ? 'active' : ''}`}
+          onClick={() => setActiveTab('sellers')}
+        >
+          Sellers
+        </button>
+        <button
           className={`tab-btn ${activeTab === 'applications' ? 'active' : ''}`}
           onClick={() => setActiveTab('applications')}
         >
@@ -102,22 +110,26 @@ function UserScreen() {
             <table className="users-table">
               <thead>
                 <tr>
-                  <th>First Name</th>
-                  <th>Last Name</th>
+                  <th>Username</th>
                   <th>Email</th>
+                  <th>Phone</th>
+                  <th>Location</th>
+                  <th>Joined</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {users.map((u) => (
                   <tr key={u.id}>
-                    <td>{u.first_name}</td>
-                    <td>{u.last_name}</td>
+                    <td>{u.username}</td>
                     <td>{u.email}</td>
+                    <td>{u.phone_number || 'N/A'}</td>
+                    <td>{u.location || 'N/A'}</td>
+                    <td>{new Date(u.date_joined).toLocaleDateString()}</td>
                     <td>
                       <button className="btn-edit">Edit</button>
                       <button
-                        onClick={() => handleDeleteUser(u.id, `${u.first_name} ${u.last_name}`)}
+                        onClick={() => handleDeleteUser(u.id, u.username)}
                         className="btn-delete"
                       >
                         Delete
@@ -174,6 +186,43 @@ function UserScreen() {
             </table>
           ) : (
             <p>No pending applications.</p>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'sellers' && (
+        <div className="tab-content">
+          <h2>All Sellers</h2>
+          {sellers && sellers.length > 0 ? (
+            <table className="sellers-table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Location</th>
+                  <th>Joined</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sellers.map((seller) => (
+                  <tr key={seller.id}>
+                    <td>{seller.username}</td>
+                    <td>{seller.email}</td>
+                    <td>{seller.phone_number || 'N/A'}</td>
+                    <td>{seller.location || 'N/A'}</td>
+                    <td>{new Date(seller.date_joined).toLocaleDateString()}</td>
+                    <td>
+                      <button className="btn-edit">Edit</button>
+                      <button className="btn-delete">Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No sellers found.</p>
           )}
         </div>
       )}

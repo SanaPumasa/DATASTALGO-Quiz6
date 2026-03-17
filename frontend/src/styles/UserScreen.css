@@ -51,34 +51,40 @@
 }
 
 .users-table,
-.applications-table {
+.applications-table,
+.sellers-table {
   width: 100%;
   border-collapse: collapse;
 }
 
 .users-table thead,
-.applications-table thead {
+.applications-table thead,
+.sellers-table thead {
   background-color: #f9f9f9;
   border-bottom: 2px solid #ddd;
 }
 
 .users-table th,
 .applications-table th,
+.sellers-table th,
 .users-table td,
-.applications-table td {
+.applications-table td,
+.sellers-table td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #eee;
 }
 
 .users-table th,
-.applications-table th {
+.applications-table th,
+.sellers-table th {
   font-weight: bold;
   color: #333;
 }
 
 .users-table td,
-.applications-table td {
+.applications-table td,
+.sellers-table td {
   color: #666;
 }
 

@@ -4,9 +4,6 @@ const API_BASE_URL = 'http://localhost:8000/api/v1';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
 api.interceptors.request.use((config) => {
@@ -18,6 +15,12 @@ api.interceptors.request.use((config) => {
   } else {
     console.log('No token in localStorage for request:', config.url);
   }
+  
+  // Only set JSON content-type if data is not FormData
+  if (config.data && !(config.data instanceof FormData)) {
+    config.headers['Content-Type'] = 'application/json';
+  }
+  
   return config;
 }, (error) => {
   console.error('Request interceptor error:', error);

@@ -24,6 +24,22 @@ export const fetchAdminUsers = () => (dispatch) => {
     });
 };
 
+export const fetchAdminSellers = () => (dispatch) => {
+  return api.get('/users/admin/sellers/')
+    .then((response) => {
+      console.log('Sellers API response:', response.data);
+      dispatch({ type: types.ADMIN_FETCH_SELLERS, payload: response.data });
+      return response.data;
+    })
+    .catch((error) => {
+      console.error('Error fetching sellers:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error message:', error.message);
+      dispatch({ type: types.ADMIN_FETCH_SELLERS, payload: [] });
+      return [];
+    });
+};
+
 export const editAdminUser = (userId, userData) => (dispatch) => {
   return api.put(`/users/admin/users/${userId}/`, userData)
     .then((response) => {

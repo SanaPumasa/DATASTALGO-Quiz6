@@ -2,6 +2,7 @@ import * as types from '../constants';
 
 const initialState = {
   users: [],
+  sellers: [],
   isLoading: false,
   error: null,
 };
@@ -12,6 +13,13 @@ export default function adminReducer(state = initialState, action) {
       return {
         ...state,
         users: action.payload,
+        isLoading: false,
+        error: null,
+      };
+    case types.ADMIN_FETCH_SELLERS:
+      return {
+        ...state,
+        sellers: action.payload,
         isLoading: false,
         error: null,
       };

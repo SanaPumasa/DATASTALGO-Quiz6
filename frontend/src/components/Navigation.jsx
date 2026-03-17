@@ -36,7 +36,7 @@ function Navigation() {
             </li>
           )}
           
-          {user?.role !== 'seller' && (
+          {user?.role === 'user' && (
             <li className="nav-item">
               <button onClick={() => navigate('/apply-seller')} className="nav-link">
                 Be a Seller
@@ -73,7 +73,7 @@ function Navigation() {
           
           <li className="nav-item">
             <button onClick={() => navigate('/profile')} className="nav-link">
-              {user?.first_name} {user?.last_name}
+              Profile
             </button>
           </li>
           
